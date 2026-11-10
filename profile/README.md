@@ -20,15 +20,30 @@ with no stone is one your alerts missed.
 
 - **`lapilli verdict`** judges one period. Use it for a week's report, or as a
   check in CI that replays a change to the rules before it is merged
-  (`--compare`).
+  (`--compare`). It says which noisy rules a longer `for` would quiet, what
+  each rule adds beside the others, and which firings came while people
+  slept, by working hours or by shift.
 - **`lapilli serve`** keeps judging, every hour, in a ledger with a
-  dashboard. Teams follow the noisy rules and the missed incidents up there,
-  and an outcomes page shows what each change came to. Agents can ask it
-  over MCP, and replay a change they propose.
+  dashboard:
+  - Teams follow their noisy rules and missed incidents, with quiet windows
+    for deploys and batches, and a weekly digest to their own Slack channel
+    or webhook.
+  - An incident no rule caught is checked for near misses: a rule that
+    nearly caught it, and the threshold or `for` that would have.
+  - Notifications as the alert managers sent them are kept beside the
+    firings: how many each rule sent, the repeats, those that woke people
+    for nothing.
+  - An outcomes page shows what each change to the rules came to.
+  - Agents can ask it over MCP, and replay a change they propose.
 
 It reads rules from Prometheus, Thanos, Mimir and VictoriaMetrics, from
-Grafana alerting, and from the managed Prometheus of AWS, Azure and Google
-Cloud. It only reads: it never changes a rule, an alert or a cluster.
+Grafana alerting, from the managed Prometheus of AWS, Azure and Google
+Cloud, and from the alarms CloudWatch and Google Cloud let you write in
+PromQL. A cloud's other alarms (CloudWatch, Azure Monitor, Google Cloud,
+OCI) are judged from the history the cloud keeps, and `lapilli serve` keeps
+it past what the cloud does. Incidents come from PagerDuty, incident.io,
+Jira or GitHub issues, or are written down in its pages.
+It only reads: it never changes a rule, an alert or a cluster.
 
 ```sh
 go install lapilli.dev/cmd/lapilli@latest
@@ -45,7 +60,8 @@ go install lapilli.dev/cmd/lapilli@latest
 Lapilli has one maintainer and is looking for more, from more than one
 organisation. Several areas need what the current maintainer doesn't have:
 
-- an AWS or Azure workspace;
+- an AWS, Azure, Google Cloud or OCI account with alarms, to try the
+  recipes and the notification paths against;
 - Loki alerts;
 - an incident tool.
 
