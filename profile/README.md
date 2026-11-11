@@ -33,6 +33,11 @@ with no stone is one your alerts missed.
   - Notifications as the alert managers sent them are kept beside the
     firings: how many each rule sent, the repeats, those that woke people
     for nothing.
+  - What each alert says is checked: a summary, a runbook, a severity, a
+    template that renders.
+  - Reports go out on the schedule people set (daily, weekly, monthly or
+    cron), to the channels and webhooks it is given.
+  - Tasks are kept in step with GitHub, GitLab, Jira or Linear issues.
   - An outcomes page shows what each change to the rules came to.
   - Agents can ask it over MCP, and replay a change they propose.
 
@@ -43,7 +48,11 @@ PromQL. A cloud's other alarms (CloudWatch, Azure Monitor, Google Cloud,
 OCI) are judged from the history the cloud keeps, and `lapilli serve` keeps
 it past what the cloud does. Incidents come from PagerDuty, incident.io,
 Jira or GitHub issues, or are written down in its pages.
-It only reads: it never changes a rule, an alert or a cluster.
+It reads by default. Turned on, it proposes changes to the rules from what
+it finds (a longer `for`, a threshold, a rule retired, what an alert says),
+each with its backtest, and makes only those a person approves: as a pull
+request on GitHub, GitLab, Bitbucket, Gitea or Azure DevOps, or through
+Grafana's API. It never changes a cluster.
 
 ```sh
 go install lapilli.dev/cmd/lapilli@latest
